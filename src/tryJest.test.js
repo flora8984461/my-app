@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
-import { prisma } from '../src/generated/prisma-client';
-import { client } from './utils/getClient';
+import { prisma } from '../server/src/generated/prisma-client';
+import { getClient } from './testutils';
 
 beforeAll(async () => {
   await prisma.deleteManyUsers()
@@ -10,15 +10,17 @@ describe('Tests the createPost Mutation', () => {
     it('should successfully create a post', async () => {
         const createPost = gql`
             mutation{
-                post(url:"www.facebook.com"
+                post(
+                url:"www.facebook.com"
                 description:"Facebook"
-              )
+                )
               {
                 id
                 createdAt
               }
             }
         `;
+        const client = getClient();
         const res = await client.mutate({
         mutation: createPost
         })
